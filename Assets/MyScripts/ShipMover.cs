@@ -14,6 +14,7 @@ public class MoveShip : MonoBehaviour
     private Rigidbody2D _rb;
     public GameObject ExplosionRef;
     public ScreenShake Shake;
+    public GameOverUI GameOverUI;
     public int GetHighScore()
     {
         return PlayerPrefs.GetInt("Hiscore", 0);
@@ -24,20 +25,22 @@ public class MoveShip : MonoBehaviour
         PlayerPrefs.SetInt("Hiscore", score);
     }
 
-    public void GameOver()
-    {
-        bool celebrateHiscore = false;
-        if (_score > GetHighScore())
-        {
-            SetHighScore(_score);
-            celebrateHiscore = true;
-        }
-    }
-
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
         _healthCurrent = _healthMax;
+    }
+
+    public void GameOver()
+    {
+        if (_healthCurrent <= 0)
+        {
+            GameOverUI.Reveal();
+        }
+        else
+        {
+            GameOverUI.Hide();
+        }
     }
 
     void Update()
@@ -52,6 +55,17 @@ public class MoveShip : MonoBehaviour
         {
             Shoot();
         }
+
+        //Vector2 screenPos = Camera.main.WorldToScreenPoint(transform.position);
+        //Vector2 newScreenPos = screenPos;
+        //if (screenPos.x < 0)
+        //{
+        //    newScreenPos.x = Screen.width;
+        //}
+        //else if (screenPos.x > Screen.width)
+        //{
+        //    newScreenPos.x = 0;
+       // }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -67,7 +81,7 @@ public class MoveShip : MonoBehaviour
 
     private void ApplyTurn(float amount)
     {
-        transform.Rotate(transform.forward, _rotateSpeed * amount * Time.deltaTime);
+        transform.Rotate(transform.forward, -_rotateSpeed * amount * Time.deltaTime);
     }
 
     private void Shoot ()
@@ -90,5 +104,6 @@ public class MoveShip : MonoBehaviour
     {
         Instantiate(ExplosionRef, transform.position, Quaternion.identity);
         Destroy(gameObject);
+        GameOver();
     }
 }

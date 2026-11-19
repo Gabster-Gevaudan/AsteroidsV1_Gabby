@@ -9,11 +9,11 @@ public class Rock : MonoBehaviour
     [SerializeField] private IntChannel _addScoreChannel;
     [SerializeField] private int _collisionDamage = 1;
     public GameObject ExplosionRef;
-    public int _scoreValue = 10;
+    public int _scoreValue = 4;
 
     public void Explode()
     {
-        MoveShip ship = FindObjectOfType<MoveShip>();
+        MoveShip ship = FindFirstObjectByType<MoveShip>();
         if (ship != null)
         {
             ship._score += _scoreValue;
